@@ -1,5 +1,5 @@
 ﻿#pragma once
-
+#include <functional>
 
 
 template <typename T>
@@ -52,7 +52,22 @@ public:
 
 
 
-private:
+	/* ---   Sorting   --- */
+	void bubble_sort(const std::function<const bool(T&, T&)>& f);
+	//-----------------------------
+
+
+
+	/* ---   Test   --- */
+	//void test1()
+	//{
+	//	castle(begin + 1, end - 2);
+	//}
+	//-----------------------------
+
+
+
+//private:
 	// Указатели вектора:
 	T* begin = nullptr;		// Первый элемент
 	T* end = nullptr;		// Следующий за последним элементом
@@ -73,6 +88,23 @@ private:
 				end = begin + cur_size;
 			}
 			end_cap = begin + new_size;
+			return true;
+		}
+		return false;
+	}
+
+	// Рокировка двух элементов по указателю
+	const bool castle(T* first, T* second)
+	{
+		if (first != second)
+		{
+			// Буфферная переменная
+			T* buf = new T;
+
+			*buf = *first;
+			*first = *second;
+			*second = *buf;
+
 			return true;
 		}
 		return false;
@@ -196,4 +228,21 @@ MyVector<T>& MyVector<T>::operator=(const MyVector<T>& in_MyV)
 	}
 	return *this;
 }
+//---------------------------------------------------------------------------------------
+
+
+
+/* ---   Sorting   --- */
+// Пузырьковая сортировка
+template<typename T>
+void MyVector<T>::bubble_sort(const std::function<const bool(T&, T&)>& f)
+{
+	if (size() > 1)
+		for (size_t j = 0; j < size() - 1; ++j)
+			for (size_t i = 0; i < size() - 1 - j; ++i)
+				if (f(*(begin + i), *(begin + i + 1)))
+					castle(begin + i, begin + i + 1);
+}
+
+// 
 //---------------------------------------------------------------------------------------
