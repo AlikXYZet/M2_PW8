@@ -10,14 +10,22 @@ public:
 
 	MyVector(const size_t& in_capacity = 8)
 	{
+		//begin = end = new T;
 		set_cap(in_capacity);
-	};
+	}
+
+	MyVector(const MyVector& in_MyV)
+	{
+		*this = in_MyV;
+	}
 
 	~MyVector()
 	{
 		free(begin);
 		begin = end = end_cap = nullptr;
 	}
+
+
 
 	/* ---   Elements   --- */
 	void push_back(const T& data);
@@ -37,6 +45,13 @@ public:
 
 
 
+	/* ---   Operators   --- */
+	T& operator[](const size_t& in_pos) const;
+	MyVector<T>& operator=(const MyVector<T>& in_MyV);
+	//-----------------------------
+
+
+
 //private:
 	// Указатели вектора:
 	T* begin = nullptr;		// Первый элемент
@@ -44,7 +59,7 @@ public:
 	T* end_cap = nullptr;	// Следующий за последним доступным участком памяти
 
 private:
-	// 
+	// Изменение ёмкости
 	const bool set_cap(const size_t& new_size)
 	{
 		if (T* rebegin = (T*)realloc(begin, sizeof(T) * new_size))
@@ -152,5 +167,33 @@ template <typename T>
 void MyVector<T>::shrink_to_fit()
 {
 	set_cap(size());
+}
+//---------------------------------------------------------------------------------------
+
+
+
+/* ---   Operators   --- */
+
+template<typename T>
+T& MyVector<T>::operator[](const size_t& in_pos) const
+{
+	// Вывод ошибки, аналогичной для std::vector
+	_STL_VERIFY(in_pos < size(), "(MyVector) vector subscript out of range");
+
+	return *(begin + in_pos);
+}
+
+template<typename T>
+MyVector<T>& MyVector<T>::operator=(const MyVector<T>& in_MyV)
+{
+	if (begin != in_MyV.begin)
+	{
+		end = begin;
+		this->reserve(in_MyV.capacity());
+
+		for (T* i = in_MyV.begin; i < in_MyV.end; ++i)
+			this->push_back(*i);
+	}
+	return *this;
 }
 //---------------------------------------------------------------------------------------
