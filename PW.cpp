@@ -2,23 +2,90 @@
 #include <vector>
 #include "MyHeap.h"
 
+struct MyS
+{
+	int Q = 1;
+	int W = 2;
+	int E = 3;
+	int R = 4;
+};
+
+MyVector<MyS> V2(5);
+//MyVector<int> V2(5);
+
+void print_test()
+{
+	std::cout << "V2: " << '\n';
+	std::cout << V2.size() << " : size" << '\n';
+	std::cout << V2.capacity() << " : capacity" << '\n';
+	std::cout << V2.begin << " : begin" << '\n';
+	std::cout << V2.end << " : end" << '\n';
+	std::cout << V2.end_cap << " : end_cap" << '\n';
+	std::cout << std::endl;
+}
+
+std::vector<MyS> V1;
+
+void print_V()
+{
+	std::cout << "V1: " << '\n';
+	std::cout << V1.size() << " : size" << '\n';
+	std::cout << V1.capacity() << " : capacity" << '\n';
+	std::cout << V1.data() << " : data" << '\n';
+	std::cout << &(V1.back()) << " : & back" << '\n';
+	std::cout << std::endl;
+}
+
+
 int main()
 
 {
-	std::vector<int> V1 = { 2, 5, 85 };
-	V1.push_back(3);
-	V1.begin();
-	V1.size();
-	std::vector<int>::iterator it;
+	MyS asd{ 2,5,8 };
+	std::cout << "sizeof(MyS): " << int(sizeof(MyS)) << "\n\n";
 
-	MyVector<int> V2(5);
-	MyVector<int>::value_type r;
+	bool test_V = 0;
 
-	std::cout << "capacity: " << V2.capacity() << '\n';
-	std::cout << "begin: " << V2.begin << '\n';
-	std::cout << "end: " << V2.end << '\n';
-	std::cout << "end_cap: " << V2.end_cap << '\n';
-	std::cout << std::endl;
+	if (test_V)
+	{
+		V1.push_back(asd);
+		V1.begin();
+		V1.size();
+
+		print_V();
+
+		print_V();
+
+		V1.push_back(asd);
+		V1.push_back(asd);
+		V1.push_back(asd);
+		V1.push_back(asd);
+
+		print_V();
+
+		V1.push_back(asd);
+
+		print_V();
+	}
+	else
+	{
+		print_test();
+		V2.push_back(asd);
+
+		print_test();
+
+		V2.push_back(asd);
+		V2.push_back(asd);
+		V2.push_back(asd);
+		V2.push_back(asd);
+
+		print_test();
+
+		V2.push_back(asd);
+
+		print_test();
+	}
+
+
 
 	return 0;
 }

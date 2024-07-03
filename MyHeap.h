@@ -8,15 +8,17 @@ class MyVector
 public:
 	using value_type = T;
 
-	MyVector(const int alloc = 8)
+	MyVector(const size_t in_capacity = 8)
 	{
-		begin = end = (T*)malloc(sizeof(T) * alloc);
-		end_cap = begin + alloc;
+		set_size(in_capacity);
+		end = begin;
+		end_cap = begin + in_capacity;
 	};
 
 	~MyVector()
 	{
 		free(begin);
+		begin = end = end_cap = nullptr;
 	}
 
 	/* ---   Elements   --- */
@@ -31,7 +33,7 @@ public:
 	/* ---   Size   --- */
 	size_t size();
 	size_t capacity();
-	void resize(size_t new_size);
+	void reserve(size_t new_size);
 	void shrink_to_fit();
 	//-----------------------------
 
@@ -42,6 +44,12 @@ public:
 	T* begin = nullptr;		// Первый элемент
 	T* end = nullptr;		// Следующий за последним элементом
 	T* end_cap = nullptr;	// Следующий за последним доступным участком памяти
+
+private:
+	void set_size(const size_t new_size)
+	{
+		begin = (T*)realloc(begin, sizeof(T) * new_size);
+	}
 };
 //---------------------------------------------------------------------------------------
 
@@ -52,7 +60,22 @@ public:
 template <typename T>
 void MyVector<T>::push_back(const T& data)
 {
+	if (end == end_cap)
+	{
+		// Буфферная переменная:
+		size_t cur_cap = size();
 
+		set_size(cur_cap * 2);
+
+		end = begin + cur_cap;
+		end_cap = begin + cur_cap * 2;
+	}
+
+	if (begin)
+	{
+		*end = data;
+		++end;
+	}
 }
 
 template <typename T>
@@ -97,14 +120,15 @@ size_t MyVector<T>::capacity()
 }
 
 template <typename T>
-void MyVector<T>::resize(size_t new_size)
+void MyVector<T>::reserve(size_t new_size)
 {
-
+	if (new_size > size())
+		set_size(new_size);
 }
 
 template <typename T>
 void MyVector<T>::shrink_to_fit()
 {
-
+	set_size(size());
 }
 //---------------------------------------------------------------------------------------
