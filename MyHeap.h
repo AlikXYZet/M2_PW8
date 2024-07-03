@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 
 
@@ -8,11 +8,9 @@ class MyVector
 public:
 	using value_type = T;
 
-	MyVector(const size_t in_capacity = 8)
+	MyVector(const size_t& in_capacity = 8)
 	{
-		set_size(in_capacity);
-		end = begin;
-		end_cap = begin + in_capacity;
+		set_cap(in_capacity);
 	};
 
 	~MyVector()
@@ -24,31 +22,45 @@ public:
 	/* ---   Elements   --- */
 	void push_back(const T& data);
 	void pop_back();
-	void insert();
-	T& front();
-	T& back();
+	size_t insert(const size_t& in_pos, const T& data);
+	T& front() const;
+	T& back() const;
 	//-----------------------------
 
 
 	/* ---   Size   --- */
-	size_t size();
-	size_t capacity();
-	void reserve(size_t new_size);
+	size_t size() const;
+	size_t capacity() const;
+	void reserve(const size_t& new_size);
 	void shrink_to_fit();
 	//-----------------------------
 
 
 
 //private:
-	// ��������� �������:
-	T* begin = nullptr;		// ������ �������
-	T* end = nullptr;		// ��������� �� ��������� ���������
-	T* end_cap = nullptr;	// ��������� �� ��������� ��������� �������� ������
+	// Указатели вектора:
+	T* begin = nullptr;		// Первый элемент
+	T* end = nullptr;		// Следующий за последним элементом
+	T* end_cap = nullptr;	// Следующий за последним доступным участком памяти
 
 private:
-	void set_size(const size_t new_size)
+	// 
+	const bool set_cap(const size_t& new_size)
 	{
-		begin = (T*)realloc(begin, sizeof(T) * new_size);
+		if (T* rebegin = (T*)realloc(begin, sizeof(T) * new_size))
+		{
+			if (begin != rebegin)
+			{
+				// Буфферная переменная
+				size_t cur_size = size();
+
+				begin = rebegin;
+				end = begin + cur_size;
+			}
+			end_cap = begin + new_size;
+			return true;
+		}
+		return false;
 	}
 };
 //---------------------------------------------------------------------------------------
@@ -61,18 +73,9 @@ template <typename T>
 void MyVector<T>::push_back(const T& data)
 {
 	if (end == end_cap)
-	{
-		// ��������� ����������:
-		size_t cur_cap = size();
+		set_cap(capacity() * 2);
 
-		set_size(cur_cap * 2);
-
-		end = begin + cur_cap;
-		end_cap = begin + cur_cap * 2;
-	}
-
-	if (begin)
-	{
+	if (begin) {
 		*end = data;
 		++end;
 	}
@@ -81,23 +84,42 @@ void MyVector<T>::push_back(const T& data)
 template <typename T>
 void MyVector<T>::pop_back()
 {
-
+	if (end != begin)
+		--end;
 }
 
 template <typename T>
-void MyVector<T>::insert()
+size_t MyVector<T>::insert(const size_t& in_pos, const T& data)
 {
+	// Проверка диапазона массива
+	if (in_pos <= size())
+	{
+		// Буфферная переменная
+		T* new_pos = begin + in_pos;
 
+		// Дублирование последнего элемента в конец 
+		push_back(*(end - 1));
+
+		// Смещение текущих данных (кроме нового последнего элемента-дубликата)
+		for (T* i = begin + size() - 2; i > new_pos; --i)
+			*i = *(i - 1);
+
+		// Запись новых данных в выбранную позицию
+		*new_pos = data;
+
+		return in_pos;
+	}
+	return 0;
 }
 
 template<typename T>
-inline T& MyVector<T>::front()
+inline T& MyVector<T>::front() const
 {
 	return begin;
 }
 
 template<typename T>
-inline T& MyVector<T>::back()
+inline T& MyVector<T>::back() const
 {
 	return end - 1;
 }
@@ -108,27 +130,27 @@ inline T& MyVector<T>::back()
 /* ---   Size   --- */
 
 template <typename T>
-size_t MyVector<T>::size()
+size_t MyVector<T>::size() const
 {
 	return end - begin;
 }
 
 template <typename T>
-size_t MyVector<T>::capacity()
+size_t MyVector<T>::capacity() const
 {
 	return end_cap - begin;
 }
 
 template <typename T>
-void MyVector<T>::reserve(size_t new_size)
+void MyVector<T>::reserve(const size_t& in_cap)
 {
-	if (new_size > size())
-		set_size(new_size);
+	if (in_cap > size())
+		set_cap(in_cap);
 }
 
 template <typename T>
 void MyVector<T>::shrink_to_fit()
 {
-	set_size(size());
+	set_cap(size());
 }
 //---------------------------------------------------------------------------------------
