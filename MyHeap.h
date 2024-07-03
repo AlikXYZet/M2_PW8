@@ -52,7 +52,7 @@ public:
 
 
 
-//private:
+private:
 	// Указатели вектора:
 	T* begin = nullptr;		// Первый элемент
 	T* end = nullptr;		// Следующий за последним элементом
