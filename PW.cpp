@@ -73,7 +73,7 @@ int main()
 
 
 	// Выбор проверяемой сортировки
-	int test_V = 1;
+	int test_V = 2;
 
 
 
@@ -107,9 +107,10 @@ int main()
 	break;
 	case 2:
 	{
-		V1.bubble_sort(
+		std::cout << "Сортировка вставками: C по возрастанию:\n" << std::endl;
+		V1.insertion_sort(
 			[](const MyS& first, const MyS& second)
-			{ return first.C < second.C; });
+			{ return first.C > second.C; });
 	}
 	break;
 	}

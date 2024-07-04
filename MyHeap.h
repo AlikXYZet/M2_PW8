@@ -82,6 +82,9 @@ public:
 
 	// Сортировка выбором
 	void selection_sort(const std::function<const bool(T&, T&)>& f);
+
+	// Сортировка вставками
+	void insertion_sort(const std::function<const bool(T&, T&)>& f);
 	//-----------------------------
 
 
@@ -258,13 +261,18 @@ void MyVector<T>::bubble_sort(const std::function<const bool(T&, T&)>& f)
 {
 	if (size() > 1)
 	{
-		// Буфферная переменная
+		// Буфферные переменные
+		T* check;
 		size_t buf_size = size() - 1;
 
 		for (size_t j = 0; j < buf_size; ++j)
 			for (size_t i = 0; i < buf_size - j; ++i)
-				if (f(*(begin + i), *(begin + i + 1)))
-					castle(begin + i, begin + i + 1);
+			{
+				check = begin + i;
+
+				if (f(*(check), *(check + 1)))
+					castle(check, check + 1);
+			}
 	}
 }
 
@@ -274,20 +282,44 @@ void MyVector<T>::selection_sort(const std::function<const bool(T&, T&)>& f)
 	if (size() > 1)
 	{
 		// Буфферные переменные
-		T* check;
+		T* check_j, * check_i;
 		size_t buf_size = size();
 
 		for (size_t j = 0; j < buf_size - 1; ++j)
 		{
-			check = begin + j;
+			check_j = begin + j;
 
 			for (size_t i = j + 1; i < buf_size; ++i)
-				if (f(*(check), *(begin + i)))
-					check = begin + i;
+			{
+				check_i = begin + i;
 
-			castle(begin + j, check);
+				if (f(*(check_j), *(check_i)))
+					check_j = check_i;
+			}
+
+			castle(begin + j, check_j);
 
 		}
+	}
+}
+
+template<typename T>
+void MyVector<T>::insertion_sort(const std::function<const bool(T&, T&)>& f)
+{
+	if (size() > 1)
+	{
+		// Буфферные переменные
+		T* check;
+		size_t buf_size = size();
+
+		for (size_t j = 1; j < buf_size; ++j)
+			for (size_t i = j; i != 0; --i)
+			{
+				check = begin + i;
+
+				if (f(*(check - 1), *(check)))
+					castle(check - 1, check);
+			}
 	}
 }
 //---------------------------------------------------------------------------------------
