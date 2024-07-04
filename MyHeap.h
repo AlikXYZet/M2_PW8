@@ -28,41 +28,60 @@ public:
 
 
 	/* ---   Elements   --- */
+
+	// Добавить элемент в конец
 	void push_back(const T& data);
+
+	// Удалить последний элемент
 	void pop_back();
+
+	// Добавить элемент в указанное место
 	size_t insert(const size_t& in_pos, const T& data);
+
+	// Получить данные первого элемента
 	T& front() const;
+
+	// Получить данные последнего элемента
 	T& back() const;
 	//-----------------------------
 
 
+
 	/* ---   Size   --- */
+
+	// Получение размера
 	size_t size() const;
+
+	// Получение ёмкости
 	size_t capacity() const;
+
+	// Задать минимальную ёмкость
 	void reserve(const size_t& new_size);
+
+	// Убрать излишнюю ёмкость
 	void shrink_to_fit();
 	//-----------------------------
 
 
 
 	/* ---   Operators   --- */
+
+	// Получение данных указанного элемента
 	T& operator[](const size_t& in_pos) const;
+
+	// Оператор копирования контейнера
 	MyVector<T>& operator=(const MyVector<T>& in_MyV);
 	//-----------------------------
 
 
 
 	/* ---   Sorting   --- */
+
+	// Пузырьковая сортировка
 	void bubble_sort(const std::function<const bool(T&, T&)>& f);
-	//-----------------------------
 
-
-
-	/* ---   Test   --- */
-	//void test1()
-	//{
-	//	castle(begin + 1, end - 2);
-	//}
+	// Сортировка выбором
+	void selection_sort(const std::function<const bool(T&, T&)>& f);
 	//-----------------------------
 
 
@@ -160,15 +179,15 @@ size_t MyVector<T>::insert(const size_t& in_pos, const T& data)
 }
 
 template<typename T>
-inline T& MyVector<T>::front() const
+T& MyVector<T>::front() const
 {
-	return begin;
+	return *begin;
 }
 
 template<typename T>
-inline T& MyVector<T>::back() const
+T& MyVector<T>::back() const
 {
-	return end - 1;
+	return *(end - 1);
 }
 //---------------------------------------------------------------------------------------
 
@@ -233,16 +252,42 @@ MyVector<T>& MyVector<T>::operator=(const MyVector<T>& in_MyV)
 
 
 /* ---   Sorting   --- */
-// Пузырьковая сортировка
+
 template<typename T>
 void MyVector<T>::bubble_sort(const std::function<const bool(T&, T&)>& f)
 {
 	if (size() > 1)
-		for (size_t j = 0; j < size() - 1; ++j)
-			for (size_t i = 0; i < size() - 1 - j; ++i)
+	{
+		// Буфферная переменная
+		size_t buf_size = size() - 1;
+
+		for (size_t j = 0; j < buf_size; ++j)
+			for (size_t i = 0; i < buf_size - j; ++i)
 				if (f(*(begin + i), *(begin + i + 1)))
 					castle(begin + i, begin + i + 1);
+	}
 }
 
-// 
+template<typename T>
+void MyVector<T>::selection_sort(const std::function<const bool(T&, T&)>& f)
+{
+	if (size() > 1)
+	{
+		// Буфферные переменные
+		T* check;
+		size_t buf_size = size();
+
+		for (size_t j = 0; j < buf_size - 1; ++j)
+		{
+			check = begin + j;
+
+			for (size_t i = j + 1; i < buf_size; ++i)
+				if (f(*(check), *(begin + i)))
+					check = begin + i;
+
+			castle(begin + j, check);
+
+		}
+	}
+}
 //---------------------------------------------------------------------------------------

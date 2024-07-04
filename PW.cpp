@@ -6,20 +6,20 @@
 #pragma pack(push, 4)
 struct MyS
 {
-	int Q = 1;
-	int W = 2;
-	int E = 3;
-	double R = 4;
+	int A = 1;
+	int B = 2;
+	int C = 3;
+	double D = 4;
 
 	// Дружественная ф-ция для вывода на консоль
 	friend std::ostream& operator<<(std::ostream& out, const MyS& in_MyS)
 	{
 		out
 			<< "{ "
-			<< in_MyS.Q << ", "
-			<< in_MyS.W << ", "
-			<< in_MyS.E << ", "
-			<< in_MyS.R << " }\n";
+			<< in_MyS.A << ", "
+			<< in_MyS.B << ", "
+			<< in_MyS.C << ", "
+			<< in_MyS.D << " }\n";
 		return out;
 	}
 };
@@ -73,7 +73,7 @@ int main()
 
 
 	// Выбор проверяемой сортировки
-	int test_V = 0;
+	int test_V = 1;
 
 
 
@@ -85,29 +85,31 @@ int main()
 	print_MyV(V1);
 	print_SinMyV(V1);
 
-	// Условие сортировки
-	auto lambda{
-		[](const MyS& first, const MyS& second)
-		{ return first.Q < second.Q; } 
-	};
-
 
 
 	switch (test_V)
 	{
 	case 0:
 	{
-		V1.bubble_sort(lambda);
+		std::cout << "Пузырьковая сортировка: A по убыванию:\n" << std::endl;
+		V1.bubble_sort(
+			[](const MyS& first, const MyS& second)
+			{ return first.A < second.A; });
 	}
 	break;
 	case 1:
 	{
-		V1.bubble_sort(lambda);
+		std::cout << "Сортировка выбором: B по возрастанию:\n" << std::endl;
+		V1.selection_sort(
+			[](const MyS& first, const MyS& second)
+			{ return first.B > second.B; });
 	}
 	break;
 	case 2:
 	{
-		V1.bubble_sort(lambda);
+		V1.bubble_sort(
+			[](const MyS& first, const MyS& second)
+			{ return first.C < second.C; });
 	}
 	break;
 	}
