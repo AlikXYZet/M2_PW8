@@ -3,13 +3,17 @@
 #include <algorithm>
 #include "MyHeap.h"
 
+
+
+/* ---   My Struct   --- */
+
 #pragma pack(push, 4)
 struct MyS
 {
+	double D = 4;
 	int A = 1;
 	int B = 2;
 	int C = 3;
-	double D = 4;
 
 	// Дружественная ф-ция для вывода на консоль
 	friend std::ostream& operator<<(std::ostream& out, const MyS& in_MyS)
@@ -24,6 +28,11 @@ struct MyS
 	}
 };
 #pragma pack(pop)
+//---------------------------------------------------------------------------------------
+
+
+
+/* ---   My Vector   --- */
 
 MyVector<MyS> V1(5);
 
@@ -37,25 +46,9 @@ void print_MyV(const MyVector<MyS>& iv_MyV)
 	std::cout << iv_MyV.end_cap << " : end_cap" << '\n';
 	std::cout << std::endl;
 }
+//---------------------------------------------------------------------------------------
 
-void print_SinMyV(const MyVector<MyS>& iv_MyV)
-{
-	for (size_t i = 0; i < iv_MyV.size(); ++i)
-		std::cout << iv_MyV[i];
-	std::cout << std::endl;
-}
 
-std::vector<MyS> V0;
-
-void print_V()
-{
-	std::cout << "V0:" << '\n';
-	std::cout << V0.size() << " : size" << '\n';
-	std::cout << V0.capacity() << " : capacity" << '\n';
-	std::cout << V0.data() << " : data" << '\n';
-	std::cout << &(V0.back()) << " : & back" << '\n';
-	std::cout << std::endl;
-}
 
 int main()
 {
@@ -73,17 +66,17 @@ int main()
 
 
 	// Выбор проверяемой сортировки
-	int test_V = 4;
+	int test_V = 5;
 
 
 
 	for (int i = 1; i < 10; ++i)
 	{
-		V1.push_back({ i, 23 - i, -i, double(rand() % 10 + 10) });
+		V1.push_back({ double(rand() % 10 + 10), i, 23 - i, -i });
 	}
 
 	print_MyV(V1);
-	print_SinMyV(V1);
+	std::cout << V1 << std::endl;
 
 
 
@@ -118,7 +111,7 @@ int main()
 		std::cout << "\"Быстрая\" сортировка: D по возрастанию:\n" << std::endl;
 		V1.quick_sort(
 			[](const MyS& first, const MyS& second)
-			{ return first.D < second.D; });
+			{ return first.D > second.D; });
 	}
 	break;
 	case 5:
@@ -150,7 +143,7 @@ int main()
 
 
 	print_MyV(V1);
-	print_SinMyV(V1);
+	std::cout << V1 << std::endl;
 
 
 
