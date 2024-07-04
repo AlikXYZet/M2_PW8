@@ -66,7 +66,7 @@ int main()
 
 
 	// Выбор проверяемой сортировки
-	int test_V = 5;
+	int test_V = 6;
 
 
 
@@ -124,7 +124,7 @@ int main()
 	break;
 	case 6:
 	{
-		std::cout << "Сортировка Шелла: D по возрастанию:\n" << std::endl;
+		std::cout << "Сортировка Шелла: D по убыванию:\n" << std::endl;
 		V1.shell_sort(
 			[](const MyS& first, const MyS& second)
 			{ return first.D > second.D; });

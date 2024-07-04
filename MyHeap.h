@@ -105,10 +105,10 @@ public:
 	// Сортировка слиянием
 	void merge_sort(const std::function<const bool(T&, T&)>& f);
 
-	/* ---   Sorting (не реализовано)   --- */
-
 	// Сортировка Шелла
 	void shell_sort(const std::function<const bool(T&, T&)>& f);
+
+	/* ---   Sorting (не реализовано)   --- */
 
 	// Сортировка кучей
 	void heap_sort(const std::function<const bool(T&, T&)>& f);
@@ -359,6 +359,10 @@ inline void MyVector<T>::merge_sort(const std::function<const bool(T&, T&)>& f)
 template<typename T>
 inline void MyVector<T>::shell_sort(const std::function<const bool(T&, T&)>& f)
 {
+	for (size_t step = size() / 2; step != 0; step /= 2)
+		for (T* j = begin + step; j < end; ++j)
+			for (T* i = j; i - begin >= step && f(*i, *(i - step)); i -= step)
+				castle(i, i - step);
 }
 
 template<typename T>
