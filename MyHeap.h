@@ -88,6 +88,9 @@ public:
 
 	// Сортировка вставками
 	void insertion_sort(const std::function<const bool(T&, T&)>& f);
+
+	// "Быстрая" сортировка
+	void quick_sort(const std::function<const bool(T&, T&)>& f);
 	//-----------------------------
 
 
@@ -133,6 +136,35 @@ private:
 			return true;
 		}
 		return false;
+	}
+
+	// Рекурсивная функция для "быстрой" сортировки
+	void recur_quick_sort(T* first, T* last, const std::function<const bool(T&, T&)>& f)
+	{
+		if ((last - first) > 1)
+		{
+			// Буфферные переменные
+			T buf;
+			T* pivot = last;
+			T* j = first;
+
+			while (j < pivot)
+				if (f(*j, *pivot))
+				{
+					buf = *j;
+
+					for (T* i = j; i < pivot; ++i)
+						*i = *(i + 1);
+
+					*pivot = buf;
+					--pivot;
+				}
+				else
+					++j;
+
+			recur_quick_sort(first, pivot - 1, f);
+			recur_quick_sort(pivot + 1, last, f);
+		}
 	}
 };
 //---------------------------------------------------------------------------------------
@@ -337,5 +369,11 @@ void MyVector<T>::insertion_sort(const std::function<const bool(T&, T&)>& f)
 					castle(check_i - 1, check_i);
 			}
 	}
+}
+
+template<typename T>
+void MyVector<T>::quick_sort(const std::function<const bool(T&, T&)>& f)
+{
+	recur_quick_sort(begin, end - 1, f);
 }
 //---------------------------------------------------------------------------------------

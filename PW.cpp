@@ -73,7 +73,7 @@ int main()
 
 
 	// Выбор проверяемой сортировки
-	int test_V = 3;
+	int test_V = 4;
 
 
 
@@ -89,7 +89,7 @@ int main()
 
 	switch (test_V)
 	{
-	case 0:
+	case 1:
 	{
 		std::cout << "Пузырьковая сортировка: A по убыванию:\n" << std::endl;
 		V1.bubble_sort(
@@ -97,7 +97,7 @@ int main()
 			{ return first.A < second.A; });
 	}
 	break;
-	case 1:
+	case 2:
 	{
 		std::cout << "Сортировка выбором: B по возрастанию:\n" << std::endl;
 		V1.selection_sort(
@@ -105,7 +105,7 @@ int main()
 			{ return first.B > second.B; });
 	}
 	break;
-	case 2:
+	case 3:
 	{
 		std::cout << "Сортировка вставками: C по возрастанию:\n" << std::endl;
 		V1.insertion_sort(
@@ -113,9 +113,12 @@ int main()
 			{ return first.C > second.C; });
 	}
 	break;
-	case 3:
+	case 4:
 	{
-		V1.erase(5);
+		std::cout << "\"Быстрая\" сортировка: D по возрастанию:\n" << std::endl;
+		V1.quick_sort(
+			[](const MyS& first, const MyS& second)
+			{ return first.D > second.D; });
 	}
 	break;
 	}
