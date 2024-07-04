@@ -110,7 +110,7 @@ public:
 
 	/* ---   Sorting (не реализовано)   --- */
 
-	// Сортировка кучей
+	// Сортировка кучей (Пирамидальная)
 	void heap_sort(const std::function<const bool(T&, T&)>& f);
 	//-----------------------------
 
@@ -133,7 +133,7 @@ private:
 	void recur_quick_sort(T* first, T* last, const std::function<const bool(T&, T&)>& f);
 
 	// Рекурсивная функция для сортировки слиянием
-	void recur_merge_sort(MyVector<T>& buf_vector_i, T* first, T* last, const std::function<const bool(T&, T&)>& f);
+	void recur_merge_sort(T* first, T* last, const std::function<const bool(T&, T&)>& f);
 };
 //---------------------------------------------------------------------------------------
 
@@ -349,11 +349,7 @@ inline void MyVector<T>::quick_sort(const std::function<const bool(T&, T&)>& f)
 template<typename T>
 inline void MyVector<T>::merge_sort(const std::function<const bool(T&, T&)>& f)
 {
-	// Буфферный вектор
-	MyVector<T> buf_vector(1);
-
-	recur_merge_sort(buf_vector, begin, end - 1, f);
-	*this = buf_vector;
+	recur_merge_sort(begin, end - 1, f);
 }
 
 template<typename T>
@@ -442,45 +438,33 @@ inline void MyVector<T>::recur_quick_sort(T* first, T* last, const std::function
 }
 
 template<typename T>
-inline void MyVector<T>::recur_merge_sort(MyVector<T>& buf_vector_i, T* first, T* last, const std::function<const bool(T&, T&)>& f)
+inline void MyVector<T>::recur_merge_sort(T* first, T* last, const std::function<const bool(T&, T&)>& f)
 {
 	if (first < last)
 	{
-		// Буфферный вектор
-		MyVector<T> buf_vector_j(1);
-
-		// Указатель середины куска массива
+		// Буфферные переменные
 		T* mid = first + (last - first) / 2;
+		T* mid_1 = mid + 1;
+		T buf;
 
 		// Сортировка половин данного куска
-		recur_merge_sort(buf_vector_i, first, mid, f);
-		recur_merge_sort(buf_vector_j, mid + 1, last, f);
+		recur_merge_sort(first, mid, f);
+		recur_merge_sort(mid + 1, last, f);
 
-		// Буфферные переменные
-		size_t size_j = buf_vector_j.size();
-		bool check = true;
-		T data;
-
-		// Объединение отсортированных половин
-		for (size_t j = 0; j < size_j; ++j)
-		{
-			data = buf_vector_j[j];
-			check = true;
-
-			for (size_t i = 0; i < buf_vector_i.size(); ++i)
-				if (f(buf_vector_i[i], data))
+		// Сортировка куска
+		for (T* j = mid_1; j <= last; ++j)
+			for (T* i = first; i <= j - 1; ++i)
+				if (f(*j, *i))
 				{
-					buf_vector_i.insert(i, data);
-					check = false;
+					buf = *j;
 
-					break;
+					for (T* k = j; k > i; --k)
+					{
+						*k = *(k - 1);
+					}
+
+					*i = buf;
 				}
-
-			if (check)
-				buf_vector_i.push_back(data);
-		}
 	}
-	else
-		buf_vector_i.push_back(*first);
 }
 //---------------------------------------------------------------------------------------

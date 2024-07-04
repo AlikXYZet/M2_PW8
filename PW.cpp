@@ -66,7 +66,7 @@ int main()
 
 
 	// Выбор проверяемой сортировки
-	int test_V = 6;
+	int test_V = 5;
 
 
 
@@ -132,7 +132,7 @@ int main()
 	break;
 	case 7:
 	{
-		std::cout << "Сортировка кучей: D по возрастанию:\n" << std::endl;
+		std::cout << "Сортировка кучей (Пирамидальная): D по возрастанию:\n" << std::endl;
 		V1.heap_sort(
 			[](const MyS& first, const MyS& second)
 			{ return first.D > second.D; });
