@@ -118,6 +118,30 @@ int main()
 		std::cout << "\"Быстрая\" сортировка: D по возрастанию:\n" << std::endl;
 		V1.quick_sort(
 			[](const MyS& first, const MyS& second)
+			{ return first.D < second.D; });
+	}
+	break;
+	case 5:
+	{
+		std::cout << "Сортировка слиянием: D по возрастанию:\n" << std::endl;
+		V1.merge_sort(
+			[](const MyS& first, const MyS& second)
+			{ return first.D > second.D; });
+	}
+	break;
+	case 6:
+	{
+		std::cout << "Сортировка Шелла: D по возрастанию:\n" << std::endl;
+		V1.shell_sort(
+			[](const MyS& first, const MyS& second)
+			{ return first.D > second.D; });
+	}
+	break;
+	case 7:
+	{
+		std::cout << "Сортировка кучей: D по возрастанию:\n" << std::endl;
+		V1.heap_sort(
+			[](const MyS& first, const MyS& second)
 			{ return first.D > second.D; });
 	}
 	break;

@@ -91,6 +91,15 @@ public:
 
 	// "Быстрая" сортировка
 	void quick_sort(const std::function<const bool(T&, T&)>& f);
+
+	// Сортировка слиянием
+	void merge_sort(const std::function<const bool(T&, T&)>& f);
+
+	// Сортировка Шелла
+	void shell_sort(const std::function<const bool(T&, T&)>& f);
+
+	// Сортировка кучей
+	void heap_sort(const std::function<const bool(T&, T&)>& f);
 	//-----------------------------
 
 
@@ -141,7 +150,7 @@ private:
 	// Рекурсивная функция для "быстрой" сортировки
 	void recur_quick_sort(T* first, T* last, const std::function<const bool(T&, T&)>& f)
 	{
-		if ((last - first) > 1)
+		if (first < last && (last - first) > 0)
 		{
 			// Буфферные переменные
 			T buf;
@@ -375,5 +384,20 @@ template<typename T>
 void MyVector<T>::quick_sort(const std::function<const bool(T&, T&)>& f)
 {
 	recur_quick_sort(begin, end - 1, f);
+}
+
+template<typename T>
+void MyVector<T>::merge_sort(const std::function<const bool(T&, T&)>& f)
+{
+}
+
+template<typename T>
+void MyVector<T>::shell_sort(const std::function<const bool(T&, T&)>& f)
+{
+}
+
+template<typename T>
+void MyVector<T>::heap_sort(const std::function<const bool(T&, T&)>& f)
+{
 }
 //---------------------------------------------------------------------------------------
