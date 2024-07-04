@@ -73,7 +73,7 @@ int main()
 
 
 	// Выбор проверяемой сортировки
-	int test_V = 2;
+	int test_V = 3;
 
 
 
@@ -111,6 +111,11 @@ int main()
 		V1.insertion_sort(
 			[](const MyS& first, const MyS& second)
 			{ return first.C > second.C; });
+	}
+	break;
+	case 3:
+	{
+		V1.erase(5);
 	}
 	break;
 	}

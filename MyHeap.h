@@ -38,6 +38,9 @@ public:
 	// Добавить элемент в указанное место
 	size_t insert(const size_t& in_pos, const T& data);
 
+	// Удалить элемент в указанном месте
+	void erase(const size_t& in_pos);
+
 	// Получить данные первого элемента
 	T& front() const;
 
@@ -182,6 +185,19 @@ size_t MyVector<T>::insert(const size_t& in_pos, const T& data)
 }
 
 template<typename T>
+void MyVector<T>::erase(const size_t& in_pos)
+{
+	// Проверка диапазона массива
+	if (in_pos <= size())
+	{
+		for (T* i = begin + in_pos + 1; i < end; ++i)
+			*(i - 1) = *i;
+
+		--end;
+	}
+}
+
+template<typename T>
 T& MyVector<T>::front() const
 {
 	return *begin;
@@ -262,16 +278,16 @@ void MyVector<T>::bubble_sort(const std::function<const bool(T&, T&)>& f)
 	if (size() > 1)
 	{
 		// Буфферные переменные
-		T* check;
+		T* check_i;
 		size_t buf_size = size() - 1;
 
 		for (size_t j = 0; j < buf_size; ++j)
 			for (size_t i = 0; i < buf_size - j; ++i)
 			{
-				check = begin + i;
+				check_i = begin + i;
 
-				if (f(*(check), *(check + 1)))
-					castle(check, check + 1);
+				if (f(*(check_i), *(check_i + 1)))
+					castle(check_i, check_i + 1);
 			}
 	}
 }
@@ -309,16 +325,16 @@ void MyVector<T>::insertion_sort(const std::function<const bool(T&, T&)>& f)
 	if (size() > 1)
 	{
 		// Буфферные переменные
-		T* check;
+		T* check_i;
 		size_t buf_size = size();
 
 		for (size_t j = 1; j < buf_size; ++j)
 			for (size_t i = j; i != 0; --i)
 			{
-				check = begin + i;
+				check_i = begin + i;
 
-				if (f(*(check - 1), *(check)))
-					castle(check - 1, check);
+				if (f(*(check_i - 1), *(check_i)))
+					castle(check_i - 1, check_i);
 			}
 	}
 }
