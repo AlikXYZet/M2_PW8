@@ -123,17 +123,26 @@ public:
 	T* end_cap = nullptr;	// Следующий за последним доступным участком памяти
 
 private:
+
+	/* ---   Private   --- */
+
 	// Изменение ёмкости
 	const bool set_cap(const size_t& new_size);
 
 	// Поменять местами два элемента по указателю
-	const bool castle(T* first, T* second);
+	void castle(T* first, T* second);
+	//-----------------------------
+
+
+
+	/* ---   Recursive   --- */
 
 	// Рекурсивная функция для "быстрой" сортировки
 	void recur_quick_sort(T* first, T* last, const std::function<const bool(T&, T&)>& f);
 
 	// Рекурсивная функция для сортировки слиянием
 	void recur_merge_sort(T* first, T* last, const std::function<const bool(T&, T&)>& f);
+	//-----------------------------
 };
 //---------------------------------------------------------------------------------------
 
@@ -275,69 +284,43 @@ inline MyVector<T>& MyVector<T>::operator=(const MyVector<T>& in_MyV)
 template<typename T>
 inline void MyVector<T>::bubble_sort(const std::function<const bool(T&, T&)>& f)
 {
-	if (size() > 1)
-	{
-		// Буфферные переменные
-		T* check_i;
-		size_t buf_size = size() - 1;
+	// Буфферные переменные
+	size_t buf_size = size() - 1;
+	T* end_1 = end - 1;
 
-		for (size_t j = 0; j < buf_size; ++j)
-			for (size_t i = 0; i < buf_size - j; ++i)
-			{
-				check_i = begin + i;
-
-				if (f(*(check_i), *(check_i + 1)))
-					castle(check_i, check_i + 1);
-			}
-	}
+	for (size_t j = 0; j < buf_size; ++j)
+		for (T* i = begin; i < end_1 - j; ++i)
+			if (f(*i, *(i + 1)))
+				castle(i, i + 1);
 }
 
 template<typename T>
 inline void MyVector<T>::selection_sort(const std::function<const bool(T&, T&)>& f)
 {
-	if (size() > 1)
+	// Буфферные указатели
+	T* check;
+	T* end_1 = end - 1;
+
+	for (T* j = begin; j < end_1; ++j)
 	{
-		// Буфферные переменные
-		T* check_j, * check_i;
-		size_t buf_size_1 = size();
-		size_t buf_size_2 = buf_size_1 - 1;
+		check = j;
 
-		for (size_t j = 0; j < buf_size_2; ++j)
-		{
-			check_j = begin + j;
+		for (T* i = j + 1; i < end; ++i)
+			if (f(*j, *i))
+				check = i;
 
-			for (size_t i = j + 1; i < buf_size_1; ++i)
-			{
-				check_i = begin + i;
-
-				if (f(*(check_j), *(check_i)))
-					check_j = check_i;
-			}
-
-			castle(begin + j, check_j);
-
-		}
+		if (check != j)
+			castle(j, check);
 	}
 }
 
 template<typename T>
 inline void MyVector<T>::insertion_sort(const std::function<const bool(T&, T&)>& f)
 {
-	if (size() > 1)
-	{
-		// Буфферные переменные
-		T* check_i;
-		size_t buf_size = size();
-
-		for (size_t j = 1; j < buf_size; ++j)
-			for (size_t i = j; i != 0; --i)
-			{
-				check_i = begin + i;
-
-				if (f(*(check_i - 1), *(check_i)))
-					castle(check_i - 1, check_i);
-			}
-	}
+	for (T* j = begin + 1; j < end; ++j)
+		for (T* i = j; i != begin; --i)
+			if (f(*(i - 1), *i))
+				castle(i - 1, i);
 }
 
 template<typename T>
@@ -364,6 +347,7 @@ inline void MyVector<T>::shell_sort(const std::function<const bool(T&, T&)>& f)
 template<typename T>
 inline void MyVector<T>::heap_sort(const std::function<const bool(T&, T&)>& f)
 {
+
 }
 //---------------------------------------------------------------------------------------
 
@@ -391,27 +375,25 @@ inline const bool MyVector<T>::set_cap(const size_t& new_size)
 }
 
 template<typename T>
-inline const bool MyVector<T>::castle(T* first, T* second)
+inline void MyVector<T>::castle(T* first, T* second)
 {
-	if (first != second)
-	{
-		// Буфферная переменная
-		T* buf = new T;
+	// Буфферная переменная
+	T* buf = new T;
 
-		*buf = *first;
-		*first = *second;
-		*second = *buf;
-
-		return true;
-	}
-	return false;
+	*buf = *first;
+	*first = *second;
+	*second = *buf;
 }
+//---------------------------------------------------------------------------------------
 
-// DO NOT "inline"
+
+
+/* ---   Recursive   --- */
+
 template<typename T>
 inline void MyVector<T>::recur_quick_sort(T* first, T* last, const std::function<const bool(T&, T&)>& f)
 {
-	if ((last - first) > 0)
+	if (first < last)
 	{
 		// Буфферные переменные
 		T buf;
@@ -445,6 +427,7 @@ inline void MyVector<T>::recur_merge_sort(T* first, T* last, const std::function
 		// Буфферные переменные
 		T* mid = first + (last - first) / 2;
 		T* mid_1 = mid + 1;
+		T* j_1;
 		T buf;
 
 		// Сортировка половин данного куска
@@ -453,7 +436,10 @@ inline void MyVector<T>::recur_merge_sort(T* first, T* last, const std::function
 
 		// Сортировка куска
 		for (T* j = mid_1; j <= last; ++j)
-			for (T* i = first; i <= j - 1; ++i)
+		{
+			j_1 = j - 1;
+
+			for (T* i = first; i <= j_1; ++i)
 				if (f(*j, *i))
 				{
 					buf = *j;
@@ -465,6 +451,7 @@ inline void MyVector<T>::recur_merge_sort(T* first, T* last, const std::function
 
 					*i = buf;
 				}
+		}
 	}
 }
 //---------------------------------------------------------------------------------------
