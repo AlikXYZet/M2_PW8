@@ -66,7 +66,7 @@ int main()
 
 
 	// Выбор проверяемой сортировки
-	int test_V = 7;
+	int test_V = 8;
 
 
 
@@ -136,6 +136,22 @@ int main()
 		V1.heap_sort(
 			[](const MyS& first, const MyS& second)
 			{ return first.D > second.D; });
+	}
+	break;
+	case 8:
+	{
+		std::cout << "Проверка на перестановку (is_permutation):" << std::boolalpha << '\n';
+
+		MyVector<MyS> V0 = V1;
+		std::cout << "Проверка #1: " << V1.is_permutation(V0) << '\n';
+
+		V1.push_back(asd);
+		std::cout << "Проверка #2: " << V1.is_permutation(V0) << '\n';
+
+		V1.erase(5);
+		std::cout << "Проверка #3: " << V1.is_permutation(V0) << '\n';
+
+		std::cout << std::noboolalpha << std::endl;
 	}
 	break;
 	}

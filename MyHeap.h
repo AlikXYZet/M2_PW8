@@ -91,25 +91,39 @@ public:
 	/* ---   Sorting   --- */
 
 	// Пузырьковая сортировка
-	void bubble_sort(const std::function<const bool(T&, T&)>& check_func);
+	void bubble_sort(const std::function<const bool(T&, T&)>& b_predicate);
 
 	// Сортировка выбором
-	void selection_sort(const std::function<const bool(T&, T&)>& check_func);
+	void selection_sort(const std::function<const bool(T&, T&)>& b_predicate);
 
 	// Сортировка вставками
-	void insertion_sort(const std::function<const bool(T&, T&)>& check_func);
+	void insertion_sort(const std::function<const bool(T&, T&)>& b_predicate);
 
 	// "Быстрая" сортировка
-	void quick_sort(const std::function<const bool(T&, T&)>& check_func);
+	void quick_sort(const std::function<const bool(T&, T&)>& b_predicate);
 
 	// Сортировка слиянием
-	void merge_sort(const std::function<const bool(T&, T&)>& check_func);
+	void merge_sort(const std::function<const bool(T&, T&)>& b_predicate);
 
 	// Сортировка Шелла
-	void shell_sort(const std::function<const bool(T&, T&)>& check_func);
+	void shell_sort(const std::function<const bool(T&, T&)>& b_predicate);
 
 	// Сортировка кучей (Пирамидальная)
-	void heap_sort(const std::function<const bool(T&, T&)>& check_func);
+	void heap_sort(const std::function<const bool(T&, T&)>& b_predicate);
+	//-----------------------------
+
+
+
+	/* ---   Finding and checking   --- */
+
+	// Поиск элемента по значению
+	size_t find(const T& in_elem);
+
+	// Поиск элемента по условию
+	size_t find_if(const std::function<const bool(T&)>& b_predicate);
+
+	// Проверка на перестановку (все ли элементы in_V есть в текущем векторе)
+	bool is_permutation(const MyVector<T>& in_V);
 	//-----------------------------
 
 
@@ -136,13 +150,13 @@ private:
 	/* ---   Recursive   --- */
 
 	// Рекурсивная функция для "быстрой" сортировки
-	void recur_quick_sort(T* first, T* last, const std::function<const bool(T&, T&)>& check_func);
+	void recur_quick_sort(T* first, T* last, const std::function<const bool(T&, T&)>& b_predicate);
 
 	// Рекурсивная функция для сортировки слиянием
-	void recur_merge_sort(T* first, T* last, const std::function<const bool(T&, T&)>& check_func);
+	void recur_merge_sort(T* first, T* last, const std::function<const bool(T&, T&)>& b_predicate);
 
 	// Рекурсивная функция для сортировки кучей
-	void recur_heap_sort(T* node, T* last, const std::function<const bool(T&, T&)>& check_func);
+	void recur_heap_sort(T* node, T* last, const std::function<const bool(T&, T&)>& b_predicate);
 	//-----------------------------
 };
 //---------------------------------------------------------------------------------------
@@ -283,7 +297,7 @@ inline MyVector<T>& MyVector<T>::operator=(const MyVector<T>& in_MyV)
 /* ---   Sorting   --- */
 
 template<typename T>
-inline void MyVector<T>::bubble_sort(const std::function<const bool(T&, T&)>& check_func)
+inline void MyVector<T>::bubble_sort(const std::function<const bool(T&, T&)>& b_predicate)
 {
 	// Буфферные переменные
 	size_t buf_size = size() - 1;
@@ -291,12 +305,12 @@ inline void MyVector<T>::bubble_sort(const std::function<const bool(T&, T&)>& ch
 
 	for (size_t j = 0; j < buf_size; ++j)
 		for (T* i = begin; i < end_1 - j; ++i)
-			if (check_func(*i, *(i + 1)))
+			if (b_predicate(*i, *(i + 1)))
 				castle(i, i + 1);
 }
 
 template<typename T>
-inline void MyVector<T>::selection_sort(const std::function<const bool(T&, T&)>& check_func)
+inline void MyVector<T>::selection_sort(const std::function<const bool(T&, T&)>& b_predicate)
 {
 	// Буфферные указатели
 	T* check;
@@ -307,7 +321,7 @@ inline void MyVector<T>::selection_sort(const std::function<const bool(T&, T&)>&
 		check = j;
 
 		for (T* i = j + 1; i < end; ++i)
-			if (check_func(*j, *i))
+			if (b_predicate(*j, *i))
 				check = i;
 
 		if (check != j)
@@ -316,44 +330,44 @@ inline void MyVector<T>::selection_sort(const std::function<const bool(T&, T&)>&
 }
 
 template<typename T>
-inline void MyVector<T>::insertion_sort(const std::function<const bool(T&, T&)>& check_func)
+inline void MyVector<T>::insertion_sort(const std::function<const bool(T&, T&)>& b_predicate)
 {
 	for (T* j = begin + 1; j < end; ++j)
 		for (T* i = j; i != begin; --i)
-			if (check_func(*(i - 1), *i))
+			if (b_predicate(*(i - 1), *i))
 				castle(i - 1, i);
 }
 
 template<typename T>
-inline void MyVector<T>::quick_sort(const std::function<const bool(T&, T&)>& check_func)
+inline void MyVector<T>::quick_sort(const std::function<const bool(T&, T&)>& b_predicate)
 {
-	recur_quick_sort(begin, end - 1, check_func);
+	recur_quick_sort(begin, end - 1, b_predicate);
 }
 
 template<typename T>
-inline void MyVector<T>::merge_sort(const std::function<const bool(T&, T&)>& check_func)
+inline void MyVector<T>::merge_sort(const std::function<const bool(T&, T&)>& b_predicate)
 {
-	recur_merge_sort(begin, end - 1, check_func);
+	recur_merge_sort(begin, end - 1, b_predicate);
 }
 
 template<typename T>
-inline void MyVector<T>::shell_sort(const std::function<const bool(T&, T&)>& check_func)
+inline void MyVector<T>::shell_sort(const std::function<const bool(T&, T&)>& b_predicate)
 {
 	for (size_t step = size() / 2; step != 0; step /= 2)
 		for (T* j = begin + step; j < end; ++j)
-			for (T* i = j; i - begin >= step && check_func(*i, *(i - step)); i -= step)
+			for (T* i = j; i - begin >= step && b_predicate(*i, *(i - step)); i -= step)
 				castle(i, i - step);
 }
 
 template<typename T>
-inline void MyVector<T>::heap_sort(const std::function<const bool(T&, T&)>& check_func)
+inline void MyVector<T>::heap_sort(const std::function<const bool(T&, T&)>& b_predicate)
 {
 	// Проверка каждого узла, начиная от крайних к корневому
 	// (с проверкой дочерних при изменении)
 	for (size_t i = size() / 2; i > 0; --i)
 	{
 		// Определить элемент и переместить его в начало
-		recur_heap_sort(begin + i - 1, end - 1, check_func);
+		recur_heap_sort(begin + i - 1, end - 1, b_predicate);
 	}
 
 	// Буфферный указатель
@@ -368,8 +382,35 @@ inline void MyVector<T>::heap_sort(const std::function<const bool(T&, T&)>& chec
 		castle(begin, begin_i_1);
 
 		// Определить элемент и переместить его в начало
-		recur_heap_sort(begin, begin_i_1, check_func);
+		recur_heap_sort(begin, begin_i_1, b_predicate);
 	}
+}
+//---------------------------------------------------------------------------------------
+
+
+
+/* ---   Finding and checking   --- */
+
+template<typename T>
+inline size_t MyVector<T>::find(const T& in_elem)
+{
+	return size_t();
+}
+
+template<typename T>
+inline size_t MyVector<T>::find_if(const std::function<const bool(T&)>& b_predicate)
+{
+	return size_t();
+}
+
+template<typename T>
+inline bool MyVector<T>::is_permutation(const MyVector<T>& in_V)
+{
+	if (in_V.size() <= size())
+	{
+
+	}
+	return false;
 }
 //---------------------------------------------------------------------------------------
 
@@ -413,7 +454,7 @@ inline void MyVector<T>::castle(T* first, T* second)
 /* ---   Recursive   --- */
 
 template<typename T>
-inline void MyVector<T>::recur_quick_sort(T* first, T* last, const std::function<const bool(T&, T&)>& check_func)
+inline void MyVector<T>::recur_quick_sort(T* first, T* last, const std::function<const bool(T&, T&)>& b_predicate)
 {
 	if (first < last)
 	{
@@ -423,7 +464,7 @@ inline void MyVector<T>::recur_quick_sort(T* first, T* last, const std::function
 		T* j = first;
 
 		while (j < pivot)
-			if (check_func(*j, *pivot))
+			if (b_predicate(*j, *pivot))
 			{
 				buf = *j;
 
@@ -436,13 +477,13 @@ inline void MyVector<T>::recur_quick_sort(T* first, T* last, const std::function
 			else
 				++j;
 
-		recur_quick_sort(first, pivot - 1, check_func);
-		recur_quick_sort(pivot + 1, last, check_func);
+		recur_quick_sort(first, pivot - 1, b_predicate);
+		recur_quick_sort(pivot + 1, last, b_predicate);
 	}
 }
 
 template<typename T>
-inline void MyVector<T>::recur_merge_sort(T* first, T* last, const std::function<const bool(T&, T&)>& check_func)
+inline void MyVector<T>::recur_merge_sort(T* first, T* last, const std::function<const bool(T&, T&)>& b_predicate)
 {
 	if (first < last)
 	{
@@ -453,8 +494,8 @@ inline void MyVector<T>::recur_merge_sort(T* first, T* last, const std::function
 		T buf;
 
 		// Сортировка половин данного куска
-		recur_merge_sort(first, mid, check_func);
-		recur_merge_sort(mid + 1, last, check_func);
+		recur_merge_sort(first, mid, b_predicate);
+		recur_merge_sort(mid + 1, last, b_predicate);
 
 		// Сортировка куска
 		for (T* j = mid_1; j <= last; ++j)
@@ -462,7 +503,7 @@ inline void MyVector<T>::recur_merge_sort(T* first, T* last, const std::function
 			j_1 = j - 1;
 
 			for (T* i = first; i <= j_1; ++i)
-				if (check_func(*j, *i))
+				if (b_predicate(*j, *i))
 				{
 					buf = *j;
 
@@ -478,7 +519,7 @@ inline void MyVector<T>::recur_merge_sort(T* first, T* last, const std::function
 }
 
 template<typename T>
-inline void MyVector<T>::recur_heap_sort(T* node, T* last, const std::function<const bool(T&, T&)>& check_func)
+inline void MyVector<T>::recur_heap_sort(T* node, T* last, const std::function<const bool(T&, T&)>& b_predicate)
 {
 	// Искомый (выявленный) элемент
 	T* ident = node;
@@ -491,7 +532,7 @@ inline void MyVector<T>::recur_heap_sort(T* node, T* last, const std::function<c
 	if (l < last)
 	{
 		// Проверка левого
-		if (check_func(*l, *ident))
+		if (b_predicate(*l, *ident))
 			ident = l;
 
 		// Правая ветвь узла
@@ -500,7 +541,7 @@ inline void MyVector<T>::recur_heap_sort(T* node, T* last, const std::function<c
 		// Если есть правая ветвь
 		if (r < last)
 			// Проверка правого
-			if (check_func(*r, *ident))
+			if (b_predicate(*r, *ident))
 				ident = r;
 	}
 
@@ -511,7 +552,7 @@ inline void MyVector<T>::recur_heap_sort(T* node, T* last, const std::function<c
 		castle(node, ident);
 
 		// Рекурсия для изменённой ветви
-		recur_heap_sort(ident, last, check_func);
+		recur_heap_sort(ident, last, b_predicate);
 	}
 }
 //---------------------------------------------------------------------------------------
