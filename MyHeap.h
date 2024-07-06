@@ -91,27 +91,25 @@ public:
 	/* ---   Sorting   --- */
 
 	// Пузырьковая сортировка
-	void bubble_sort(const std::function<const bool(T&, T&)>& f);
+	void bubble_sort(const std::function<const bool(T&, T&)>& check_func);
 
 	// Сортировка выбором
-	void selection_sort(const std::function<const bool(T&, T&)>& f);
+	void selection_sort(const std::function<const bool(T&, T&)>& check_func);
 
 	// Сортировка вставками
-	void insertion_sort(const std::function<const bool(T&, T&)>& f);
+	void insertion_sort(const std::function<const bool(T&, T&)>& check_func);
 
 	// "Быстрая" сортировка
-	void quick_sort(const std::function<const bool(T&, T&)>& f);
+	void quick_sort(const std::function<const bool(T&, T&)>& check_func);
 
 	// Сортировка слиянием
-	void merge_sort(const std::function<const bool(T&, T&)>& f);
+	void merge_sort(const std::function<const bool(T&, T&)>& check_func);
 
 	// Сортировка Шелла
-	void shell_sort(const std::function<const bool(T&, T&)>& f);
-
-	/* ---   Sorting (не реализовано)   --- */
+	void shell_sort(const std::function<const bool(T&, T&)>& check_func);
 
 	// Сортировка кучей (Пирамидальная)
-	void heap_sort(const std::function<const bool(T&, T&)>& f);
+	void heap_sort(const std::function<const bool(T&, T&)>& check_func);
 	//-----------------------------
 
 
@@ -138,10 +136,13 @@ private:
 	/* ---   Recursive   --- */
 
 	// Рекурсивная функция для "быстрой" сортировки
-	void recur_quick_sort(T* first, T* last, const std::function<const bool(T&, T&)>& f);
+	void recur_quick_sort(T* first, T* last, const std::function<const bool(T&, T&)>& check_func);
 
 	// Рекурсивная функция для сортировки слиянием
-	void recur_merge_sort(T* first, T* last, const std::function<const bool(T&, T&)>& f);
+	void recur_merge_sort(T* first, T* last, const std::function<const bool(T&, T&)>& check_func);
+
+	// Рекурсивная функция для сортировки кучей
+	void recur_heap_sort(T* node, T* last, const std::function<const bool(T&, T&)>& check_func);
 	//-----------------------------
 };
 //---------------------------------------------------------------------------------------
@@ -282,7 +283,7 @@ inline MyVector<T>& MyVector<T>::operator=(const MyVector<T>& in_MyV)
 /* ---   Sorting   --- */
 
 template<typename T>
-inline void MyVector<T>::bubble_sort(const std::function<const bool(T&, T&)>& f)
+inline void MyVector<T>::bubble_sort(const std::function<const bool(T&, T&)>& check_func)
 {
 	// Буфферные переменные
 	size_t buf_size = size() - 1;
@@ -290,12 +291,12 @@ inline void MyVector<T>::bubble_sort(const std::function<const bool(T&, T&)>& f)
 
 	for (size_t j = 0; j < buf_size; ++j)
 		for (T* i = begin; i < end_1 - j; ++i)
-			if (f(*i, *(i + 1)))
+			if (check_func(*i, *(i + 1)))
 				castle(i, i + 1);
 }
 
 template<typename T>
-inline void MyVector<T>::selection_sort(const std::function<const bool(T&, T&)>& f)
+inline void MyVector<T>::selection_sort(const std::function<const bool(T&, T&)>& check_func)
 {
 	// Буфферные указатели
 	T* check;
@@ -306,7 +307,7 @@ inline void MyVector<T>::selection_sort(const std::function<const bool(T&, T&)>&
 		check = j;
 
 		for (T* i = j + 1; i < end; ++i)
-			if (f(*j, *i))
+			if (check_func(*j, *i))
 				check = i;
 
 		if (check != j)
@@ -315,39 +316,60 @@ inline void MyVector<T>::selection_sort(const std::function<const bool(T&, T&)>&
 }
 
 template<typename T>
-inline void MyVector<T>::insertion_sort(const std::function<const bool(T&, T&)>& f)
+inline void MyVector<T>::insertion_sort(const std::function<const bool(T&, T&)>& check_func)
 {
 	for (T* j = begin + 1; j < end; ++j)
 		for (T* i = j; i != begin; --i)
-			if (f(*(i - 1), *i))
+			if (check_func(*(i - 1), *i))
 				castle(i - 1, i);
 }
 
 template<typename T>
-inline void MyVector<T>::quick_sort(const std::function<const bool(T&, T&)>& f)
+inline void MyVector<T>::quick_sort(const std::function<const bool(T&, T&)>& check_func)
 {
-	recur_quick_sort(begin, end - 1, f);
+	recur_quick_sort(begin, end - 1, check_func);
 }
 
 template<typename T>
-inline void MyVector<T>::merge_sort(const std::function<const bool(T&, T&)>& f)
+inline void MyVector<T>::merge_sort(const std::function<const bool(T&, T&)>& check_func)
 {
-	recur_merge_sort(begin, end - 1, f);
+	recur_merge_sort(begin, end - 1, check_func);
 }
 
 template<typename T>
-inline void MyVector<T>::shell_sort(const std::function<const bool(T&, T&)>& f)
+inline void MyVector<T>::shell_sort(const std::function<const bool(T&, T&)>& check_func)
 {
 	for (size_t step = size() / 2; step != 0; step /= 2)
 		for (T* j = begin + step; j < end; ++j)
-			for (T* i = j; i - begin >= step && f(*i, *(i - step)); i -= step)
+			for (T* i = j; i - begin >= step && check_func(*i, *(i - step)); i -= step)
 				castle(i, i - step);
 }
 
 template<typename T>
-inline void MyVector<T>::heap_sort(const std::function<const bool(T&, T&)>& f)
+inline void MyVector<T>::heap_sort(const std::function<const bool(T&, T&)>& check_func)
 {
+	// Проверка каждого узла, начиная от крайних к корневому
+	// (с проверкой дочерних при изменении)
+	for (size_t i = size() / 2; i > 0; --i)
+	{
+		// Определить элемент и переместить его в начало
+		recur_heap_sort(begin + i - 1, end - 1, check_func);
+	}
 
+	// Буфферный указатель
+	T* begin_i_1;
+
+	// Проверка корневого узла с уменьшением размера проверяемой зоны
+	// (с проверкой дочерних при изменении)
+	for (size_t i = size(); i > 0; --i)
+	{
+		begin_i_1 = begin + i - 1;
+		// Перенос элемента уже определённого элемента в крайнюю позицию
+		castle(begin, begin_i_1);
+
+		// Определить элемент и переместить его в начало
+		recur_heap_sort(begin, begin_i_1, check_func);
+	}
 }
 //---------------------------------------------------------------------------------------
 
@@ -391,7 +413,7 @@ inline void MyVector<T>::castle(T* first, T* second)
 /* ---   Recursive   --- */
 
 template<typename T>
-inline void MyVector<T>::recur_quick_sort(T* first, T* last, const std::function<const bool(T&, T&)>& f)
+inline void MyVector<T>::recur_quick_sort(T* first, T* last, const std::function<const bool(T&, T&)>& check_func)
 {
 	if (first < last)
 	{
@@ -401,7 +423,7 @@ inline void MyVector<T>::recur_quick_sort(T* first, T* last, const std::function
 		T* j = first;
 
 		while (j < pivot)
-			if (f(*j, *pivot))
+			if (check_func(*j, *pivot))
 			{
 				buf = *j;
 
@@ -414,13 +436,13 @@ inline void MyVector<T>::recur_quick_sort(T* first, T* last, const std::function
 			else
 				++j;
 
-		recur_quick_sort(first, pivot - 1, f);
-		recur_quick_sort(pivot + 1, last, f);
+		recur_quick_sort(first, pivot - 1, check_func);
+		recur_quick_sort(pivot + 1, last, check_func);
 	}
 }
 
 template<typename T>
-inline void MyVector<T>::recur_merge_sort(T* first, T* last, const std::function<const bool(T&, T&)>& f)
+inline void MyVector<T>::recur_merge_sort(T* first, T* last, const std::function<const bool(T&, T&)>& check_func)
 {
 	if (first < last)
 	{
@@ -431,8 +453,8 @@ inline void MyVector<T>::recur_merge_sort(T* first, T* last, const std::function
 		T buf;
 
 		// Сортировка половин данного куска
-		recur_merge_sort(first, mid, f);
-		recur_merge_sort(mid + 1, last, f);
+		recur_merge_sort(first, mid, check_func);
+		recur_merge_sort(mid + 1, last, check_func);
 
 		// Сортировка куска
 		for (T* j = mid_1; j <= last; ++j)
@@ -440,7 +462,7 @@ inline void MyVector<T>::recur_merge_sort(T* first, T* last, const std::function
 			j_1 = j - 1;
 
 			for (T* i = first; i <= j_1; ++i)
-				if (f(*j, *i))
+				if (check_func(*j, *i))
 				{
 					buf = *j;
 
@@ -452,6 +474,44 @@ inline void MyVector<T>::recur_merge_sort(T* first, T* last, const std::function
 					*i = buf;
 				}
 		}
+	}
+}
+
+template<typename T>
+inline void MyVector<T>::recur_heap_sort(T* node, T* last, const std::function<const bool(T&, T&)>& check_func)
+{
+	// Искомый (выявленный) элемент
+	T* ident = node;
+
+	// Левая ветвь узла
+	T* l = begin + (2 * (node - begin)) + 1;
+
+	// Найти элемент по указанному условию
+	// Если нет левой ветви, то и нет правой
+	if (l < last)
+	{
+		// Проверка левого
+		if (check_func(*l, *ident))
+			ident = l;
+
+		// Правая ветвь узла
+		T* r = l + 1;
+
+		// Если есть правая ветвь
+		if (r < last)
+			// Проверка правого
+			if (check_func(*r, *ident))
+				ident = r;
+	}
+
+	// Если выявленный элемент не узел
+	if (ident != node)
+	{
+		// Рокировка узла с выявленным элементов ветви
+		castle(node, ident);
+
+		// Рекурсия для изменённой ветви
+		recur_heap_sort(ident, last, check_func);
 	}
 }
 //---------------------------------------------------------------------------------------
