@@ -243,11 +243,16 @@ int main()
 			MyVector<MyS> V0 = V1;
 			std::cout << "Проверка #1: при V0 = V1\n" << V1.is_permutation(V0) << "\n\n";
 
+			MyS buf = V1[3];
+			V1.erase(3);
+			V1.insert(8, buf);
+			std::cout << "Проверка #2: при swap(V1[3], V1[8])\n" << V1.is_permutation(V0) << "\n\n";
+
 			V1.push_back(test_MyS);
-			std::cout << "Проверка #2: после V1.push_back(test_MyS)\n" << V1.is_permutation(V0) << "\n\n";
+			std::cout << "Проверка #3: после V1.push_back(test_MyS)\n" << V1.is_permutation(V0) << "\n\n";
 
 			V1.erase(5);
-			std::cout << "Проверка #3: после V1.erase(5)\n" << V1.is_permutation(V0) << "\n\n";
+			std::cout << "Проверка #4: после V1.erase(5)\n" << V1.is_permutation(V0) << "\n\n";
 
 			std::cout
 				<< std::noboolalpha
@@ -377,6 +382,11 @@ int main()
 
 			MyVector<Heavy_S> V0 = V1;
 			std::cout << "Проверка #1: при V0 = V1\n" << V1.is_permutation(V0) << "\n\n";
+
+			Heavy_S buf = V1[3];
+			V1.erase(3);
+			V1.insert(8, buf);
+			std::cout << "Проверка #2: при swap(V1[3], V1[8])\n" << V1.is_permutation(V0) << "\n\n";
 
 			V1.push_back(test_Heavy_S);
 			std::cout << "Проверка #2: после V1.push_back(test_Heavy_S)\n" << V1.is_permutation(V0) << "\n\n";
