@@ -143,13 +143,13 @@ int main()
 		std::cout << "Проверка на перестановку (is_permutation):" << std::boolalpha << '\n';
 
 		MyVector<MyS> V0 = V1;
-		std::cout << "Проверка #1: " << V1.is_permutation(V0) << '\n';
+		std::cout << "Проверка #1: V0 = V1\n" << V1.is_permutation(V0) << "\n\n";
 
 		V1.push_back(asd);
-		std::cout << "Проверка #2: " << V1.is_permutation(V0) << '\n';
+		std::cout << "Проверка #2: V1.push_back(asd)\n" << V1.is_permutation(V0) << "\n\n";
 
 		V1.erase(5);
-		std::cout << "Проверка #3: " << V1.is_permutation(V0) << '\n';
+		std::cout << "Проверка #3: V1.erase(5)\n" << V1.is_permutation(V0) << "\n\n";
 
 		std::cout << std::noboolalpha << std::endl;
 	}

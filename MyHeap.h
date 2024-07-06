@@ -117,13 +117,13 @@ public:
 	/* ---   Finding and checking   --- */
 
 	// Поиск элемента по значению
-	size_t find(const T& in_elem);
+	size_t find(T& in_elem);
 
 	// Поиск элемента по условию
 	size_t find_if(const std::function<const bool(T&)>& b_predicate);
 
 	// Проверка на перестановку (все ли элементы in_V есть в текущем векторе)
-	bool is_permutation(const MyVector<T>& in_V);
+	bool is_permutation(MyVector<T>& in_V);
 	//-----------------------------
 
 
@@ -392,25 +392,37 @@ inline void MyVector<T>::heap_sort(const std::function<const bool(T&, T&)>& b_pr
 /* ---   Finding and checking   --- */
 
 template<typename T>
-inline size_t MyVector<T>::find(const T& in_elem)
+inline size_t MyVector<T>::find(T& in_elem)
 {
-	return size_t();
+	for (T* i = begin; i < end; ++i)
+		// Сравнение содержимого в ячейках памяти
+		if (!memcmp(&in_elem, i, sizeof(T)))
+			return i - begin;
+
+	return size();
 }
 
 template<typename T>
 inline size_t MyVector<T>::find_if(const std::function<const bool(T&)>& b_predicate)
 {
-	return size_t();
+	for (T* i = begin; i < end; ++i)
+		if (b_predicate(*i))
+			return i - begin;
+
+	return size();
 }
 
 template<typename T>
-inline bool MyVector<T>::is_permutation(const MyVector<T>& in_V)
+inline bool MyVector<T>::is_permutation(MyVector<T>& in_V)
 {
-	if (in_V.size() <= size())
-	{
+	bool check = true;
 
-	}
-	return false;
+	if (in_V.size() <= size())
+		for (T* i = in_V.begin; i < in_V.end; ++i)
+			if (find(*i) == size())
+				check = false;
+
+	return check;
 }
 //---------------------------------------------------------------------------------------
 
