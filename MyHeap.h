@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <functional>
+#include <iostream>
 
 
 template <typename T>
@@ -271,10 +272,26 @@ inline void MyVector<T>::shrink_to_fit()
 template<typename T>
 inline T& MyVector<T>::operator[](const size_t& in_pos) const
 {
-	// Вывод ошибки, аналогичной для std::vector
-	_STL_VERIFY(in_pos < size(), "(MyVector) vector subscript out of range");
+	try
+	{
+		// Вывод ошибки, аналогичной для std::vector
+		//_STL_VERIFY(in_pos < size(), "(MyVector) vector subscript out of range");
+		if (in_pos >= size())
+			throw;
 
-	return *(begin + in_pos);
+		return *(begin + in_pos);
+	}
+	catch (...)
+	{
+		std::cout
+			<< "ERROR: (MyVector) vector subscript out of range!\n"
+			<< "( in_pos = " << in_pos
+			<< ", size() = " << size()
+			<< ", return: Last element"
+			<< " )\n" << std::endl;
+
+		return *(end - 1);
+	}
 }
 
 template<typename T>

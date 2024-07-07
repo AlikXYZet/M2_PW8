@@ -1,6 +1,4 @@
 ﻿#include <iostream>
-#include <vector>
-#include <algorithm>
 #include <chrono>
 #include <thread>
 #include "MyHeap.h"
